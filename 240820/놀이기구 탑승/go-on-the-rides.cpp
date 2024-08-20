@@ -126,10 +126,15 @@ void check_emptyS() {
 	int ny=0, nx=0;
 	int tempmap[21][21] = { 0 };
 	vector<pos> tempCnt[5];
+	int chklast = 0;
+	int cky = 0, ckx = 0;
 
 	for (int i = 1; i <= N; i++) {
 		for (int j = 1; j <= N; j++) {
 			if (map[i][j] > 0) continue;
+			chklast++;
+			cky = i;
+			ckx = j;
 			for (int d = 0; d < 4; d++) {
 				ny = i + dy[d];
 				nx = j + dx[d];
@@ -141,6 +146,10 @@ void check_emptyS() {
 			}
 		}
 	}
+	if (chklast == 1) {
+		forsort.push_back({ 0, 0, cky, ckx });
+	}
+	
 	for (int i = 4; i >= 0; i--) {
 		if (tempCnt[i].size() == 0) continue;
 		for (pos c : tempCnt[i]) {
@@ -191,6 +200,10 @@ void process() {
 			check_emptyC();
 
 		}
+		if (forsort.size() == 0) {
+
+		}
+
 		sort(forsort.begin(), forsort.end(), cmp);
 
 		map[forsort[0].y][forsort[0].x] = now.me;
@@ -203,7 +216,7 @@ void process() {
 
 int main() {
 
-	// freopen("sample_input.txt", "r", stdin);
+	//freopen("sample_input.txt", "r", stdin);
 
 	input();
 	process();
