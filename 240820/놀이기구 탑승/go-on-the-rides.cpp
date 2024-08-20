@@ -129,6 +129,7 @@ void check_emptyS() {
 
 	for (int i = 1; i <= N; i++) {
 		for (int j = 1; j <= N; j++) {
+			if (map[i][j] > 0) continue;
 			for (int d = 0; d < 4; d++) {
 				ny = i + dy[d];
 				nx = j + dx[d];
@@ -202,7 +203,7 @@ void process() {
 
 int main() {
 
-	//freopen("sample_input.txt", "r", stdin);
+	// freopen("sample_input.txt", "r", stdin);
 
 	input();
 	process();
