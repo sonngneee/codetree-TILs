@@ -5,7 +5,7 @@
 |[Simulation](https://www.codetree.ai/training-field/search/?tags=Simulation)|[기출문제](https://www.codetree.ai/training-field/frequent-problems)|
 
 
-
+## 친구 없는 경우 주의 !
 
 
 
