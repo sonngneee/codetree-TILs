@@ -47,7 +47,7 @@ bool cmp(int a, int b) {
 }
 
 void change_gun(player_info* winP, int ny, int nx) {
-	
+
 	sort(map_gun[ny][nx].begin(), map_gun[ny][nx].end(), cmp);
 
 	// 총이 없다면 ??
@@ -118,6 +118,7 @@ void fight(player_info* nowP, int ny, int nx) {
 
 		// 맵 업데이트
 	map_player[winP->y][winP->x] = 0;
+	map_player[loseP->y][loseP->x] = 0;
 
 	winP->y = ny;
 	winP->x = nx;
@@ -143,8 +144,6 @@ void fight(player_info* nowP, int ny, int nx) {
 			continue;
 		}
 
-		map_player[loseP->y][loseP->x] = 0;
-
 		loseP->y = ny_l;
 		loseP->x = nx_l;
 
@@ -156,11 +155,10 @@ void fight(player_info* nowP, int ny, int nx) {
 		change_gun(loseP, loseP->y, loseP->x);
 	}
 
+	if (!map_gun[winP->y][winP->x].empty()) {
+		change_gun(winP, ny, nx);
+	}
 
-	change_gun(winP, ny, nx);
-
-
-	
 }
 
 
