@@ -212,7 +212,7 @@ void process() {
 
 int main() {
 
-	//freopen("sample_input.txt", "r", stdin);
+	// freopen("sample_input.txt", "r", stdin);
 
 	input();
 	process();
