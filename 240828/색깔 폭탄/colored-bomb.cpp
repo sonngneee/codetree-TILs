@@ -111,7 +111,7 @@ void bfs(int y, int x, forsort* Bundle) {
             if (next.y < 0 || next.y >= n || next.x < 0 || next.x >= n) continue;
             if (visited[next.y][next.x] == 1) continue;
             // 빨간색 제외의 다른 색인경우
-            if ((map[next.y][next.x] != 0) && (map[now.y][now.x] != map[next.y][next.x])) continue;
+            if ((map[next.y][next.x] != 0) && (map[y][x] != map[next.y][next.x])) continue;
             // 돌 + 빈칸인경우
             if (map[next.y][next.x] < 0) continue;
 
@@ -124,10 +124,10 @@ void bfs(int y, int x, forsort* Bundle) {
 
 
 
-void findMaxBomb() {    
-    
+void findMaxBomb() {
+
     int bomb_cnt = 1;
-    
+
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             if (map[i][j] < 1 || visited[i][j] == 1) continue;
@@ -143,7 +143,7 @@ void findMaxBomb() {
                     }
                 }
             }
-            
+
             // 가장 큰 폭탄 업데이트, 리스트 저장
             if (Bundle.B_cnt > bomb_cnt) {
                 bomb_cnt = Bundle.B_cnt;
@@ -174,10 +174,10 @@ void gravity() {
 
     for (int j = 0; j < n; j++) {
         next = 0;
-        for (int i = n - 1; i >0 ; i--) {
+        for (int i = n - 1; i > 0; i--) {
             if (map[i][j] != -2) continue;
             for (int c = i - 1; c >= 0; c--) {
-                
+
                 if (map[c][j] == -2) continue;
                 if (map[c][j] == -1) {
                     next = 1;
@@ -200,7 +200,7 @@ void turn() {
 
     for (int y = 0; y < n; y++) {
         for (int x = 0; x < n; x++) {
-            map[y][x] = tempMap[x][n - y -1];
+            map[y][x] = tempMap[x][n - y - 1];
         }
     }
 }
@@ -239,7 +239,7 @@ int main() {
 
     input();
 
-    while(!isFin){
+    while (!isFin) {
         init();
         process();
     }
