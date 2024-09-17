@@ -70,6 +70,7 @@ struct pos_num {
 
 vector <Ginfo> golem_info; // {{c, d}, ...}
 
+int is_lr;
 
 void input() {
 	cin >> R >> C >> K;
@@ -156,6 +157,28 @@ int check_green(fairy_info* st) {
 	int cnt_g = 0;
 
 	if (st->r == R + 3 - 2) return 0;
+	if (is_lr == 3) {
+		is_lr = 0;
+		int i = 2;
+		cnt_g = 0;
+		except_dir = (ck_dir[i] + 2) % 4;
+
+		for (int j = 0; j < 4; j++) {
+			if (except_dir == j) continue;
+			next.r = st->r + dy[j] + dy[ck_dir[i]];
+			next.c = st->c + dx[j] + dx[ck_dir[i]];
+
+			if (next.r < 0 || next.c < 0 || next.r >= R + 3 || next.c >= C) break;
+			if (map_FF[next.r][next.c].exit_info != 0) break;
+			cnt_g++;
+
+		}
+
+		if (cnt_g == 3) {
+			return ck_dir[i];
+		}
+		return 0;
+	}
 
 	for (int i = 0; i < 3; i++) {
 		cnt_g = 0;
@@ -179,6 +202,7 @@ int check_green(fairy_info* st) {
 
 	return 0;
 }
+
 
 // move_dir = 남(2), 서(3), 동(1)
 void move_green(int md, fairy_info* st) {
@@ -225,7 +249,7 @@ void move_green(int md, fairy_info* st) {
 
 	// if (map[st->r + dy[md] + dy[2] * 2][st->c + dx[md] + dx[2] * 2] != 0 || map[st->r + dy[md] * 2 + dy[2]][st->c + dx[md] * 2 + dx[2]] != 0) return;
 	if (map_FF[st->r + dy[md] + dy[2] * 2][st->c + dx[md] + dx[2] * 2].exit_info != 0 || map_FF[st->r + dy[md] * 2 + dy[2]][st->c + dx[md] * 2 + dx[2]].exit_info != 0) {
-		is_possible = 0;
+		is_lr = md;
 		return;
 	}
 
@@ -288,7 +312,17 @@ void move_golem(fairy_info* st) {
 		// 각 칸들이 비어있는지 확인
 		// move_dir = 남, 서, 동
 		// move_dir = 남(2), 서(3), 동(1)
-		move_dir = check_green(st);
+		if (is_lr == 3) {
+			move_dir = check_green(st);
+		}
+		else if (is_lr == 1) {
+			is_lr = 0;
+			move_dir = 0;
+		}
+		else {
+			is_lr = 0;
+			move_dir = check_green(st);
+		}
 
 		if (move_dir == 0) {
 			// 더이상 움직일 곳이 없는 경우
