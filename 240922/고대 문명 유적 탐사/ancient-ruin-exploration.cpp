@@ -134,36 +134,16 @@ void input() {
 // 미니맵 회전
 void minimapRotation(int r) {
     int tmm[3][3] = { 0 };
-
-    // 270
-    if (r == 3) {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                tmm[i][j] = tempminimap[j][3 - i - 1];
-            }
-        }
-
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                tempminimap[i][j] = tmm[i][j];
-            }
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            tmm[i][j] = tempminimap[3 - j - 1][i];
         }
     }
 
-    for (int rt = 0; rt < r; rt++) {
-
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                tmm[i][j] = tempminimap[3 - j - 1][i];
-            }
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            tempminimap[i][j] = tmm[i][j];
         }
-
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                tempminimap[i][j] = tmm[i][j];
-            }
-        }
-
     }
 }
 
@@ -179,15 +159,19 @@ void minimapR(int row, int col, int r) {
     }
     int a = 0;
     int b = 0;
-    for (int i = row - 1; i <= row + 1; i++) {
+    if (r == 1) {
+        a = 0;
         b = 0;
-        for (int j = col - 1; j <= col + 1; j++) {
-            tempminimap[a][b] = map[i][j];
-            b++;
+        for (int i = row - 1; i <= row + 1; i++) {
+            b = 0;
+            for (int j = col - 1; j <= col + 1; j++) {
+                tempminimap[a][b] = map[i][j];
+                b++;
+            }
+            a++;
         }
-        a++;
     }
-
+    
     // 미니맵 회전
     minimapRotation(r);
 
@@ -391,9 +375,11 @@ void process() {
         ansC = 0;
 
         findR(); // 유물 찾기
+        
         if (forSelectR.size() == 0) {
             return;
         }
+        
         getR();  // 1차 유물 얻기
         
         if (isBreak == 0) {
@@ -432,7 +418,7 @@ void process() {
 
 int main() {
 
-    // freopen("input.txt", "r", stdin);
+    //freopen("input.txt", "r", stdin);
 
     input();
     process();
