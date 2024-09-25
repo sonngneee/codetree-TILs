@@ -48,7 +48,7 @@ vector<pos> knightposinfo[31]; // 기사 y, x 좌표
 int dy[4] = { -1, 0, 1, 0 };
 int dx[4] = { 0, 1, 0, -1 };
 int visited[41][41];
-int ans;
+
 
 void Input() {
     int a;
@@ -93,7 +93,10 @@ int IsMovePossible(order nowQ) {
     slide = queue<int>(); // slide 초기화
 
     // slide 초기화
-    memset(visited, 0, sizeof(visited));
+    for (int i = 0; i < 41; i++) {
+        memset(visited[i], 0, sizeof(visited[i]));
+    }
+    
 
     int ksize = knightposinfo[nowQ.num].size();
     for (int i = 0; i < ksize; i++) {
@@ -130,12 +133,21 @@ int IsMovePossible(order nowQ) {
     return 1;
 }
 
+struct mapupdate {
+    int y, x, num;
+};
+
 void Move(order pushk) {
     // 업데이트!
     // knightposinfo 기사 번호에 따른 y,x 좌표
     // hp : 기사 체력
     // knightmap : 기사 번호 map 
     int moveknight = 0;
+    int tempmapzs[41][41];
+    vector<mapupdate> md; // 이동할 위치
+
+    // 다 삭제하고 -> 후에 맵 업데이트 해야할것 같은데..
+
     while (!slide.empty()) {
         moveknight = slide.front(); // 밀려난 기사 num
         slide.pop();
@@ -150,7 +162,8 @@ void Move(order pushk) {
             for (int i = 0; i < knightposinfo[moveknight].size(); i++) {
                 knightposinfo[moveknight][i].y += dy[pushk.d];
                 knightposinfo[moveknight][i].x += dx[pushk.d];
-                knightmap[knightposinfo[moveknight][i].y][knightposinfo[moveknight][i].x] = moveknight;
+                md.push_back({ knightposinfo[moveknight][i].y, knightposinfo[moveknight][i].x, moveknight });
+                //knightmap[knightposinfo[moveknight][i].y][knightposinfo[moveknight][i].x] = moveknight;
             }
 
             continue;
@@ -164,15 +177,48 @@ void Move(order pushk) {
         for (int i = 0; i < knightposinfo[moveknight].size(); i++) {
             knightposinfo[moveknight][i].y += dy[pushk.d];
             knightposinfo[moveknight][i].x += dx[pushk.d];
-            knightmap[knightposinfo[moveknight][i].y][knightposinfo[moveknight][i].x] = moveknight;
+            md.push_back({ knightposinfo[moveknight][i].y, knightposinfo[moveknight][i].x, moveknight });
+            // knightmap[knightposinfo[moveknight][i].y][knightposinfo[moveknight][i].x] = moveknight;
             // 기사들은 모두 밀린 이후에 대미지를 입게 됩니다.
-            if (chessmap[knightposinfo[moveknight][i].y][knightposinfo[moveknight][i].x] == 1) {
+           /* if (chessmap[knightposinfo[moveknight][i].y][knightposinfo[moveknight][i].x] == 1) {
                 hp[moveknight] -= 1;
                 attack[moveknight]++;
+            }*/
+        }
+    }
+    // map 업데이트
+    for (int i = 0; i < md.size(); i++) {
+        knightmap[md[i].y][md[i].x] = md[i].num;
+    }
+
+    // hp 계산
+    int check_die[31] = { 0 }; // 새로 죽은 기사 1체크
+
+    for (int i = 0; i < md.size(); i++) {
+        if (pushk.num == md[i].num) continue;
+
+        if (chessmap[md[i].y][md[i].x] == 1) {
+            hp[md[i].num] -= 1;
+            attack[md[i].num]++;
+        }
+        if (hp[md[i].num] <= 0) {
+            check_die[md[i].num] = 1;
+        }
+    }
+
+    // hp 에 따른 map 업데이트
+
+    for (int i = 1; i <= N; i++) {
+        if (check_die[i] == 1) {
+            for (int j = 0; j < knightposinfo[i].size(); j++) {
+
+                knightmap[knightposinfo[i][j].y][knightposinfo[i][j].x] = 0;
             }
         }
     }
 }
+
+int ans;
 
 void Process() {
     order nowQ;
@@ -200,7 +246,7 @@ void Process() {
 
 int main() {
 
-    //freopen("sample_input.txt", "r", stdin);
+    // freopen("sample_input.txt", "r", stdin);
 
     Input();
     Process();
