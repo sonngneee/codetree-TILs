@@ -17,7 +17,7 @@ void Input() {
 int maxval = 0;
 void check1(int r, int c) {
 	
-	if (r + 1 >= n || c + 1 >= n) return;
+	if (r + 1 >= n || c + 1 >= m) return;
 
 	int sqr = map[r][c] + map[r + 1][c] + map[r][c + 1] + map[r + 1][c + 1];
 	for (int i = r; i < r + 2; i++) {
@@ -40,7 +40,7 @@ void check2(int r, int c) {
 
 void check3(int r, int c) {
 
-	if (c + 2 >= n) return;
+	if (c + 2 >= m) return;
 	int sqr = 0;
 
 	for (int col = c; col < c + 3; col++) {
@@ -52,7 +52,7 @@ void check3(int r, int c) {
 void Process() {
 
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
+		for (int j = 0; j < m; j++) {
 			check1(i, j);
 			check2(i, j);
 			check3(i, j);
