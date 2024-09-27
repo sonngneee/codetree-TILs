@@ -60,6 +60,7 @@ int main() {
 	// freopen("sample_input.txt", "r", stdin);
 	Input();
 	Process();
-	cout << ans;
+	if (ans == 0) cout << -1;
+	else cout << ans;
 	return 0;
 }
