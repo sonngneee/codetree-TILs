@@ -21,15 +21,13 @@ struct pos {
 	int y, x;
 };
 
-int dy[3] = { 0, 1, 1 };
-int dx[3] = { 1, 0, 1 };
 
 int Calculation(pos st, pos ed) {
 	int cnt =0;
 
 	for (int i = st.y; i <= ed.y; i++) {
 		for (int j = st.x; j <= ed.x; j++) {
-			if (map[i][j] < 0) return 0;
+			if (map[i][j] <= 0) return 0;
 			cnt++;
 		}
 	}
@@ -57,7 +55,7 @@ void Process() {
 
 int main() {
 
-	// freopen("sample_input.txt", "r", stdin);
+	//freopen("sample_input.txt", "r", stdin);
 	Input();
 	Process();
 	if (ans == 0) cout << -1;
