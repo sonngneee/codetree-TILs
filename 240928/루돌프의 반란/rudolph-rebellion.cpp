@@ -3,6 +3,7 @@
 #include<algorithm>
 #include <vector>
 #include <cmath>
+
 using namespace std;
 
 int N, M, P, C, D;    //맵크기, 게임턴수,산타수,루돌프힘,산타힘
@@ -40,6 +41,7 @@ void Input() {
         santa[n] = { a - 1, b - 1, -1, 0 };
         map[a - 1][b - 1] = n;
     }
+
 }
 
 bool cmp(pos a, pos b) {
@@ -67,6 +69,7 @@ void Interaction(pos pre, pos now) {
         next.x = temp.x + dxd[temp.dir];
         next.dir = temp.dir;
         
+
         if (next.y < 0 || next.x < 0 || next.y >= N || next.x >= N) {
             out[map[temp.y][temp.x]] = 1;
             break;
@@ -83,13 +86,16 @@ void Interaction(pos pre, pos now) {
         santa[map[temp.y][temp.x]] = { next.y, next.x, next.dir };
         temp = next;
     }
+
 }
+
 
 void Crush(int num, pos now, int snum) {
     // 루돌프 움직여서 충돌
     pos nextS;
     if (num == 1) {
         // now = 루돌프가 이동할 위치에 있는 산타
+
         int nowSantanum = map[now.y][now.x];
         score[nowSantanum] += C;
         sleep[nowSantanum] = 2;
@@ -102,6 +108,7 @@ void Crush(int num, pos now, int snum) {
             map[dol.y][dol.x] = 0;
             map[now.y][now.x] = -1;
             dol = now;
+
 
             return;
         }
@@ -116,6 +123,8 @@ void Crush(int num, pos now, int snum) {
         map[nextS.y][nextS.x] = nowSantanum;
         santa[nowSantanum].y = nextS.y;
         santa[nowSantanum].x = nextS.x;
+
+
     }
 
     else {
@@ -136,16 +145,22 @@ void Crush(int num, pos now, int snum) {
 
             return;
         }
+
+        map[santa[snum].y][santa[snum].x] = 0;
         if (map[nextS.y][nextS.x] != 0) {
 
             Interaction({santa[snum].y, santa[snum].x, santa[snum].dir}, nextS);
         }
-        map[santa[snum].y][santa[snum].x] = 0;
+        
         map[nextS.y][nextS.x] = snum;
         santa[snum].y = nextS.y;
         santa[snum].x = nextS.x;
+
     }
+
+
 }
+
 
 void MoveDol() {
     int minlen = 1000;
@@ -184,23 +199,34 @@ void MoveDol() {
         if (len < minlen) {
             moveD = nextD;
             minlen = len;
+
         }
     }
 
     // 루돌프 이동!
+    // 
+
     // 충돌있을 경우
     if (map[moveD.y][moveD.x] != 0) {
         Crush(1, moveD, 0);
+
     }
+
     // 빈 칸일 경우
     else {
         //// 루돌프 맵 업데이트
         map[dol.y][dol.x] = 0;
+
         //// 루돌프 위치, 방향 저장
         dol = moveD;
+
         map[dol.y][dol.x] = -1;
+
     }
+
 }
+
+
 
 void MoveSanta(int snum) {
     pos move = { -1, -1, -1 };
@@ -231,6 +257,7 @@ void MoveSanta(int snum) {
         santa[snum].dir = move.dir;
 
         Crush(2, move, snum);
+
     }
 
     // 빈 공간인 경우
@@ -265,6 +292,7 @@ void Process() {
             
             MoveSanta(p);
         }
+        
 
         // 살아남은 산타 점수주기
         for (int p = 1; p <= P; p++) {
@@ -285,7 +313,10 @@ void Process() {
     }
 }
 
+
 int main() {
+
+    //freopen("input.txt", "r", stdin);
 
     Input();
     Process();
