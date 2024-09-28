@@ -11,7 +11,7 @@ int main() {
 	int a = 0;
 	cin >> n >> T;
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
+		for (int j = 0; j < 3; j++) {
 			cin >> a;
 			Q.push_back(a);
 		}
@@ -23,7 +23,7 @@ int main() {
 		Q.insert(Q.begin(), temp);
 	}
 
-	for (int i = 0; i < n * n; i++) {
+	for (int i = 0; i < n * 3; i++) {
 		cout << Q[i] << ' ';
 		if ((i + 1) % n == 0) cout << '\n';
 	}
