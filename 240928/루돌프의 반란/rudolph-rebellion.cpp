@@ -304,8 +304,8 @@ void Process() {
         if (alive == 0) {
             for (int p = 1; p <= P; p++) {
                 cout << score[p]<< ' ' ;
-                return;
             }
+            return;
         }
     }
     for (int p = 1; p <= P; p++) {
