@@ -136,11 +136,19 @@ void Move() {
 			
 			if (map[now.y][now.x] == 1) {
 				if (isTwoThree == 2) {
-					map[save2.y][save2.x] = 1;
-					head_tail[team_map[now.y][now.x]].head = save2;
-					map[now.y][now.x] = 3;
-					head_tail[team_map[now.y][now.x]].tail = now;
-					map[save3.y][save3.x] = 2;
+					int cky, ckx = 0;
+					for (int c = 0; c < 4; c++) {
+						cky = save3.y + dy[c];
+						ckx = save3.x + dx[c];
+						if (map[cky][ckx] == 2) break;
+					}
+
+					map[save3.y][save3.x] = 1;
+					head_tail[team_map[now.y][now.x]].head = save3;
+					map[now.y][now.x] = 2;
+
+					head_tail[team_map[now.y][now.x]].tail = { cky, ckx };
+					map[cky][ckx] = 3;
 					isEnd = 1;
 					break;
 				}
@@ -183,7 +191,7 @@ int bfs(pos n) {
 			next = { now.y + dy[i], now.x + dx[i] };
 			if (next.y < 0 || next.x < 0 || next.y >= N || next.x >= N) continue;
 			if (map[next.y][next.x] == 4 || map[next.y][next.x] == 0) continue;
-			
+			if (map[next.y][next.x] == 3) continue;
 			q.push({ next.y, next.x, now.cnt + 1 });
 			visited[next.y][next.x] = 1;
 		}
@@ -234,7 +242,7 @@ void Ans() {
 
 int main() {
 
-	//freopen("input.txt", "r", stdin);
+	// freopen("input.txt", "r", stdin);
 	Input();
 	Process();
 	Ans();
