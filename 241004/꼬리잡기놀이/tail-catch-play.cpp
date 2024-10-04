@@ -170,9 +170,10 @@ int bfs(pos n) {
 void Ball(int dir, int rc) {
 	pos st = { 0, 0 };
 	pos now = { 0, 0 };
+	int isCrush = 0;
 
-	if (dir == 0) st = { rc-1, 0 };
-	else if (dir == 1) st = { N - 1, rc-1 };
+	if (dir == 0) st = { rc, 0 };
+	else if (dir == 1) st = { N - 1, rc };
 	else if (dir == 2) st = { N - 1, N - rc-1 };
 	else st = { 0, N - rc-1 };
 
@@ -180,9 +181,10 @@ void Ball(int dir, int rc) {
 		now.y = st.y + i* dy[dir];
 		now.x = st.x + i* dx[dir];
 		if (map[now.y][now.x] == 0 || map[now.y][now.x] == 4) continue;
+		isCrush = 1;
 		break;
 	}
-
+	if (isCrush == 0) return;
 	// now에있는놈이 몇번째 놈인지 체크
 	int chk = bfs(now);
 	
@@ -196,7 +198,7 @@ void Ball(int dir, int rc) {
 void Process() {
 	for (int k = 1; k <= K; k++) {
 		Move();
-		Ball(k/N, k%N);
+		Ball((k-1)/N, (k+6)%N);
 	}
 }
 
