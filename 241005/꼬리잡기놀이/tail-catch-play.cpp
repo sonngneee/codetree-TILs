@@ -155,12 +155,14 @@ int bfs(pos n) {
 		if (map[now.y][now.x] == 1) {
 			return now.cnt;
 		}
+		
 
 		for (int i = 0; i < 4; i++) {
 			next = { now.y + dy[i], now.x + dx[i] };
 			if (next.y < 0 || next.x < 0 || next.y >= N || next.x >= N) continue;
 			if (map[next.y][next.x] == 4 || map[next.y][next.x] == 0) continue;
 			if (map[next.y][next.x] == 3) continue;
+			if (map[now.y][now.x] == 3 && map[next.y][next.x] == 1) continue;
 			q.push({ next.y, next.x, now.cnt + 1 });
 			visited[next.y][next.x] = 1;
 		}
@@ -201,8 +203,9 @@ void Ball(int dir, int rc) {
 
 	if (dir == 0) st = { rc, 0 };
 	else if (dir == 1) st = { N - 1, rc };
-	else if (dir == 2) st = { N - 1, N - rc-1 };
-	else st = { 0, N - rc-1 };
+
+	else if (dir == 2) st = { N - rc - 1, N - 1 };
+	else st = { 0, N - rc - 1 };
 
 	for (int i = 0; i < N; i++) {
 		now.y = st.y + i* dy[dir];
@@ -224,7 +227,7 @@ void Ball(int dir, int rc) {
 void Process() {
 	for (int k = 1; k <= K; k++) {
 		Move();
-		Ball((k-1)/N, (k+N-1)%N);
+		Ball((k-1)/N, (k-1)%N);
 	}
 }
 
@@ -238,7 +241,7 @@ void Ans() {
 
 int main() {
 
-	//freopen("input.txt", "r", stdin);
+	// freopen("input.txt", "r", stdin);
 	Input();
 	Process();
 	Ans();
