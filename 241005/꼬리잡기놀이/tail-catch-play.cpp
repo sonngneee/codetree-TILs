@@ -25,7 +25,6 @@ int N, M, K; // 격자, 팀 수, 라운드 수
 int map[21][21];
 int team_map[21][21];
 int team_score[6];
-int team_cnt = 0;
 
 int dy[4] = { 0, -1, 0, 1 };
 int dx[4] = { 1, 0, -1, 0 };
@@ -43,11 +42,19 @@ struct ht {
 
 ht head_tail[6];	// 각 팀의 머리, 꼬리 정보
 
+vector<pos> location[6]; // 각 팀의 경로 저장(머리-나머지-꼬리-4..)
+
+bool isOutRange(int x, int y) {
+	return !(x >= 0 && x < N && y >= 0 && y < N);
+}
+int tcnt[6]; // 꼬리의 위치 (앞에서 tcnt + 1번째)
+
 void Input() {
 	cin >> N >> M >> K;
 	queue<pos> hd;
 	queue<pos> tl;
-
+	
+	// 머리, 꼬리 위치 저장
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N; j++) {
 			cin >> map[i][j];
@@ -56,122 +63,84 @@ void Input() {
 		}
 	}
 
-	int visited[21][21];
 	int cnt = 1;
-	pos now, next;
-
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++) {
-			if (map[i][j] == 0) continue;
-			if (visited[i][j] == 1) continue;
-			
-			queue<pos>q;
-			q.push({i, j});
-			visited[i][j] = 1;
-			
-			while (!q.empty()) {
-				now = q.front();
-				q.pop();
-				team_map[now.y][now.x] = cnt;
-				for (int d = 0; d < 4; d++) {
-					next = { now.y + dy[d], now.x + dx[d] };
-					if (next.y < 0 || next.x < 0 || next.y >= N || next.x >= N) continue;
-					if (visited[next.y][next.x] == 1) continue;
-					if (map[next.y][next.x] == 0) continue;
-
-					q.push(next);
-					visited[next.y][next.x] = 1;
-				}
-			}
-			cnt++;
-		}
-	}
-	team_cnt = cnt-1;
-
-	pos posht;
-	while (!hd.empty()) {
-		posht = hd.front();
-		hd.pop();
-		head_tail[team_map[posht.y][posht.x]].head = { posht.y, posht.x };
-	}
-	while (!tl.empty()) {
-		posht = tl.front();
-		tl.pop();
-		head_tail[team_map[posht.y][posht.x]].tail = { posht.y, posht.x };
-	}
-
-}
-
-void Move() {
-	pos now, next;
-	pos save4, save2, save3;
-
-	for (int i = 1; i <= team_cnt; i++) {
-		//i = 팀 번호
-
-		now = head_tail[i].head;
+	pos pre, now, next;
+	// 같은팀 파악
+	// 처음엔 무조건 2로 가기! => dfs 대신에 bfs로 경로 저장해볼까?
+	// => 그럴거면 위에서 저장한 hd 위치에서 bfs 시작
+	// team_map도 업데이트
+	
+	for (int i = 0; i < M; i++) {
+		vector<pos> route;
 		int visited[21][21] = {0};
-		int isEnd = 0, isTwoThree = 0;
+		int tailcnt = 0;
 
-		while (!isEnd) {
-			isTwoThree = 0;
+		pre = hd.front();
+		hd.pop();
+		head_tail[cnt].head = pre;
+
+		queue<pos>q;
+		q.push(pre);
+		visited[pre.y][pre.x] = 1;
+
+		while (!q.empty()) {
+			now = q.front();
+			q.pop();
+			route.push_back(now);
+			team_map[now.y][now.x] = cnt;
+			if (map[now.y][now.x] == 3) {
+				head_tail[cnt].tail = now;
+				tcnt[i + 1] = tailcnt;
+			}
+			tailcnt++;
+
 			for (int d = 0; d < 4; d++) {
 				next = { now.y + dy[d], now.x + dx[d] };
-				if (next.y < 0 || next.x < 0 || next.y >= N || next.x >= N) continue;
-				if (visited[next.y][next.x] == 1) continue;
-				if (map[next.y][next.x] == 0) continue;
+				if (isOutRange(next.y, next.x)) continue;
+				if (map[next.y][next.x] == 0 || visited[next.y][next.x] == 1) continue;
+				if (((pre.y == now.y) && (pre.x == now.x)) && map[next.y][next.x] != 2) continue;
 
-				if (map[next.y][next.x] == 4) save4 = next;
-				else if (map[next.y][next.x] == 2) {
-					isTwoThree++;
-					save2 = next;
-				}
-
-				else if (map[next.y][next.x] == 3) {
-					save3 = next;
-					isTwoThree++;
-					isEnd = 1;
-				}
+				q.push(next);
+				visited[next.y][next.x] = 1;			
 			}
-			
-			if (map[now.y][now.x] == 1) {
-				if (isTwoThree == 2) {
-					int cky, ckx = 0;
-					for (int c = 0; c < 4; c++) {
-						cky = save3.y + dy[c];
-						ckx = save3.x + dx[c];
-						if (map[cky][ckx] == 2) break;
-					}
+		}
+		location[cnt] = route;
+		cnt++;
+	}
+}
 
-					map[save3.y][save3.x] = 1;
-					head_tail[team_map[now.y][now.x]].head = save3;
-					map[now.y][now.x] = 2;
 
-					head_tail[team_map[now.y][now.x]].tail = { cky, ckx };
-					map[cky][ckx] = 3;
-					isEnd = 1;
-					break;
-				}
+void Move() {
+	for (int i = 1; i <= M; i++) {
+		// 각 팀 이동
+		// 팀 location 이동
+		int last = location[i].size() - 1;
+		pos temp = location[i][last];
 
-				head_tail[team_map[now.y][now.x]].head = save4;
-				map[save4.y][save4.x] = map[now.y][now.x];
+		for (int z = last; z >0; z--) {
+			location[i][z] = location[i][z - 1];
+		}
+		location[i][0] = temp;
+
+		// 팀 location이동에 따른 map 업데이트
+		for (int l = 0; l <= last;l++) {
+			pos upnow = location[i][l];
+			if (l == 0) {
+				map[upnow.y][upnow.x] = 1;
 			}
-			visited[now.y][now.x] = 1;
-			
-			if (isEnd == 1) {
-				map[now.y][now.x] = map[save3.y][save3.x];
-				head_tail[team_map[now.y][now.x]].tail = now;
-				map[save3.y][save3.x] = 4;
-				now = save3;
-				continue;
+			else if (l < tcnt[i]) {
+				map[upnow.y][upnow.x] = 2;
 			}
-			// map[save23.y][save23.x] = 4;
-			map[now.y][now.x] = map[save2.y][save2.x];
-			now = save2;
-			
+			else if (l == tcnt[i]) {
+				map[upnow.y][upnow.x] = 3;
+			}
+			else {
+				map[upnow.y][upnow.x] = 4;
+			}		
 		}
 	}
 }
+
 
 int bfs(pos n) {
 
@@ -197,6 +166,34 @@ int bfs(pos n) {
 		}
 	}
 }
+
+void Updatdmap(int tnum) {
+
+	int teamsize = location[tnum].size();
+	vector<pos> temp;
+	for (int i = 0; i < teamsize; i++) {
+		temp.push_back(location[tnum][(tcnt[tnum] - i + teamsize) % teamsize]);
+	}
+	location[tnum] = temp;
+
+	// 팀 location이동에 따른 map 업데이트
+	for (int l = 0; l < teamsize; l++) {
+		pos upnow = location[tnum][l];
+		if (l == 0) {
+			map[upnow.y][upnow.x] = 1;
+		}
+		else if (l < tcnt[tnum]) {
+			map[upnow.y][upnow.x] = 2;
+		}
+		else if (l == tcnt[tnum]) {
+			map[upnow.y][upnow.x] = 3;
+		}
+		else {
+			map[upnow.y][upnow.x] = 4;
+		}
+	}
+}
+
 void Ball(int dir, int rc) {
 	pos st = { 0, 0 };
 	pos now = { 0, 0 };
@@ -217,13 +214,12 @@ void Ball(int dir, int rc) {
 	if (isCrush == 0) return;
 	// now에있는놈이 몇번째 놈인지 체크
 	int chk = bfs(now);
-	
-	team_score[team_map[now.y][now.x]] += (chk * chk);
-	pos temp = head_tail[team_map[now.y][now.x]].head;
-	head_tail[team_map[now.y][now.x]].head = head_tail[team_map[now.y][now.x]].tail;
-	head_tail[team_map[now.y][now.x]].tail = temp;
-	map[head_tail[team_map[now.y][now.x]].head.y][head_tail[team_map[now.y][now.x]].head.x] = 1;
-	map[head_tail[team_map[now.y][now.x]].tail.y][head_tail[team_map[now.y][now.x]].tail.x] = 3;
+	int crushTeam = team_map[now.y][now.x];
+	team_score[crushTeam] += (chk * chk);
+
+	// 좌표 변경
+	Updatdmap(crushTeam);
+
 }
 void Process() {
 	for (int k = 1; k <= K; k++) {
