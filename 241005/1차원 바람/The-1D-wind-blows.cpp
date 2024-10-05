@@ -6,7 +6,7 @@
 using namespace std;
 
 int Y, X, B;
-int map[101][101];
+int map[100][100];
 
 struct info {
 	int r;
@@ -14,7 +14,7 @@ struct info {
 	int ud;
 };
 
-info windinfo[101];
+info windinfo[100];
 
 int dy[4] = { -1, 0, 1, 0 };
 int dx[4] = { 0, 1, 0, -1 };
@@ -39,7 +39,7 @@ void Input() {
 void Move(info now) {
 	if (now.d == 'L') {
 		int temp = map[now.r][X - 1];
-		for (int i = X - 1; i > 0; i--) {
+ 		for (int i = X - 1; i > 0; i--) {
 			map[now.r][i] = map[now.r][i - 1];
 		}
 		map[now.r][0] = temp;
@@ -61,7 +61,7 @@ void Compare(info now) {
 		if (now.d == 'R') next.d = 'L';
 		else next.d = 'R';
 
-		if (next.d < 0) return;
+		if (next.r < 0) return;
 		for (int i = 0; i < X; i++) {
 			if (map[now.r][i] == map[next.r][i]) {
 				next.ud = 1;
@@ -86,6 +86,8 @@ void Compare(info now) {
 		}
 	}
 }
+
+
 
 void Process() {
 	for (int b = 0; b < B; b++) {
