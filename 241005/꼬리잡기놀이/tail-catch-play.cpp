@@ -227,7 +227,7 @@ void Ball(int dir, int rc) {
 void Process() {
 	for (int k = 1; k <= K; k++) {
 		Move();
-		Ball((k-1)/N, (k-1)%N);
+		Ball(((k-1)/N)% 4, (k-1)%N);
 	}
 }
 
