@@ -224,7 +224,7 @@ void Ball(int dir, int rc) {
 void Process() {
 	for (int k = 1; k <= K; k++) {
 		Move();
-		Ball((k-1)/N, (k+6)%N);
+		Ball((k-1)/N, (k+N-1)%N);
 	}
 }
 
@@ -238,7 +238,7 @@ void Ans() {
 
 int main() {
 
-	// freopen("input.txt", "r", stdin);
+	//freopen("input.txt", "r", stdin);
 	Input();
 	Process();
 	Ans();
