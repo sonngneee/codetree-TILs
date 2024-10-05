@@ -149,6 +149,7 @@ int bfs(pos n) {
 	int visited[21][21] = { 0 };
 	q.push({n.y, n.x, 1});
 	visited[n.y][n.x] = 1;
+
 	while (!q.empty()) {
 		now = q.front();
 		q.pop();
@@ -196,6 +197,15 @@ void Updatdmap(int tnum) {
 	}
 }
 
+int Findnum(pos now) {
+	int nowteam = team_map[now.y][now.x];
+	int routesize = location[nowteam].size();
+	for (int i = 0; i < routesize; i++) {
+		if (location[nowteam][i].y == now.y && location[nowteam][i].x == now.x) {
+			return i + 1;
+		}
+	}
+}
 void Ball(int dir, int rc) {
 	pos st = { 0, 0 };
 	pos now = { 0, 0 };
@@ -216,7 +226,10 @@ void Ball(int dir, int rc) {
 	}
 	if (isCrush == 0) return;
 	// now에있는놈이 몇번째 놈인지 체크
-	int chk = bfs(now);
+	int chk = Findnum(now);
+
+
+
 	int crushTeam = team_map[now.y][now.x];
 	team_score[crushTeam] += (chk * chk);
 
