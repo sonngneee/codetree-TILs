@@ -127,6 +127,11 @@ void AttackF() {
 		for (int i = bingsize - 2; i > 0; i--) {
 			if (now == bingmap[i]) {
 				forsave.push_back(i);
+				if (i == 1 && forsave.size() >= 4) {
+					int fsize = forsave.size();
+					delet.push_back({ forsave[fsize - 1], forsave[0], fsize }); // 삭제할 앞 인덱스, 뒷 인덱스
+					
+				}
 			}
 			else {
 				int fsize = forsave.size();
