@@ -180,10 +180,13 @@ void Find() {
 				dou++;
 				next = { now.y + dou * fdy[d], now.x + dou * fdx[d] };// 대각선 방향으로 한칸씩
 				if (!isRange(next)) break;
-				if (map[next.y][next.x] <= 0) {
+
+				if (map[next.y][next.x] == 0) {
 					ddlist.push_back(next);
 					break;
 				}
+				else if (map[next.y][next.x] == -1) break;
+
 				ddlist.push_back(next);
 				deadcnt += map[next.y][next.x];
 			}
@@ -202,11 +205,14 @@ void Drop() {
 	}
 }
 
+
 void Process() {
 	for (int year = 0; year < M; year++) {
 		if (year != 0) {
 			Init();
 		}
+
+		if (treepos.size() == 0) return;
 		// 성장
 		Growth();
 
@@ -223,7 +229,7 @@ void Process() {
 
 int main() {
 
-	// freopen("input.txt", "r", stdin);
+	//freopen("input.txt", "r", stdin);
 	Input();
 	Process();
 	cout << ans;
