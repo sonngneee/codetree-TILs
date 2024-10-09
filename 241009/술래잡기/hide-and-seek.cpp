@@ -109,7 +109,7 @@ void Run() {
 		if (!isRange(nnext)) {
 			now.dir = (now.dir + 2) % 4;
 			nnext = nextPos({ now.y, now.x }, now.dir);
-			if (sul.y == nnext.y && sul.y == nnext.x) {
+			if (sul.y == nnext.y && sul.x == nnext.x) {
 				next = now;
 			}
 			else {
@@ -118,7 +118,7 @@ void Run() {
 		}
 		else {
 			nnext = nextPos({ now.y, now.x }, now.dir);
-			if (sul.y == nnext.y && sul.y == nnext.x) {
+			if (sul.y == nnext.y && sul.x == nnext.x) {
 				next = now;
 			}
 			else {
