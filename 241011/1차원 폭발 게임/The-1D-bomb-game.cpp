@@ -1,7 +1,8 @@
-#define _CRT_SECURE_NO_WARININGS
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <cstring>
 
 using namespace std;
 
@@ -53,6 +54,11 @@ void Del() {
 			temp.push_back(i);
 			now = next;
 		}
+
+		if ((i == bsize - 1) && (M == 1)) {
+			del.push_back(i);
+		}
+
 	}
 
 	if (del.size() == 0) {
@@ -75,21 +81,25 @@ void Del() {
 	bsize = cnt;
 }
 
+void Print() {
+	cout << bsize << '\n';
+	for (int i = 0; i < bsize; i++) {
+		cout << map[i] << '\n';
+	}
+}
+
 void Process() {
 	bsize = N;
 	while (!isTrue) {
 		memset(tempmap, 0, sizeof(tempmap));
 		Del();
 	}
-	cout << bsize<<'\n';
-	for (int i = 0; i < bsize; i++) {
-		cout << map[i] << '\n';
-	}
 }
 int main() {
-	
+	//freopen("sample_input.txt", "r", stdin);
 	Input();
 	Process();
+	Print();
 	
 	return 0;
 }
