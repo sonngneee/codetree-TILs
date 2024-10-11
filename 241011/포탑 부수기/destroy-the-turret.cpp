@@ -213,6 +213,8 @@ void BomB() {
     int rscore = poinfo[st.y][st.x].score;
     pos next;
 
+    attackmap[st.y][st.x] = 1;
+
     poinfo[ed.y][ed.x].score -= rscore;
     if (poinfo[ed.y][ed.x].score <= 0) {
         poinfo[ed.y][ed.x].score = 0;
@@ -221,8 +223,8 @@ void BomB() {
     attackmap[ed.y][ed.x] = 1;
 
     for (int i = 0; i < 8; i++) {
-        next.y = ((ed.y + edy[i]) + 8)%8;
-        next.x = ((ed.x + edx[i]) + 8)%8;
+        next.y = ((ed.y + edy[i]) + N)% N;
+        next.x = ((ed.x + edx[i]) + M)% M;
 
         if (next.y == st.y && next.x == st.x) continue;
         if (arrivemap[next.y][next.x] == 0) continue;
@@ -356,18 +358,40 @@ void Clean() {
         }
     }
 }
+
+int map[11][11];
+
+void TEST() {
+    memset(map, 0, sizeof(map));
+    for (int i = 0; i < pov.size(); i++) {
+        map[pov[i].y][pov[i].x] = pov[i].score;
+    }
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < M; j++) {
+            cout << map[i][j]<<' ';
+        }
+        cout << '\n';
+    }
+    cout << "------------------------"<<'\n';
+}
+
 void Process() {
 
     for (int k = 1; k < K+1; k++) {
+        if (pov.size() == 1) {
+            return;
+        }
         attackppl = AttackPP(k);    // 공격자 선정
 
         targetppl = TargetPP();     // 대상 선정
 
         Attack(k);
-
+        
+        
         Clean();
-
+        
         Makepov();
+        // TEST();
     }
 
 }
