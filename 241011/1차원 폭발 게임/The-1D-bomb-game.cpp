@@ -27,8 +27,10 @@ void Del() {
 	int now = map[0];
 	temp.push_back(0);
 	int cnt = 1;
+	
 
 	for (int i = 1; i < bsize; i++) {
+
 		int next = map[i];
 
 		if (now == next) {
@@ -61,6 +63,10 @@ void Del() {
 
 	}
 
+	if ((N == 1) && (M == 1)) {
+		del.push_back(0);
+	}
+
 	if (del.size() == 0) {
 		isTrue = 1;
 		return;
@@ -79,6 +85,10 @@ void Del() {
 	}
 	memcpy(map, tempmap, sizeof(map));
 	bsize = cnt;
+	if (bsize == 0) {
+		isTrue = 1;
+		return;
+	}
 }
 
 void Print() {
